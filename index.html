@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4a2f22">
+<title>Bagar Billi</title>
+<style>
+:root{--g:#4a2f22;--g2:#e07a3f;--mine:#ffe2c4;--bg:#f6ede4;--ink:#17211e;--mute:#6b7b76}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{font:16px/1.4 system-ui,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);
+ padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button{border:0;cursor:pointer;font:inherit}
+input{font:inherit}
+.screen{display:none;height:100%;flex-direction:column}
+.screen.on{display:flex}
+header{background:var(--g);color:#fff;padding:12px 14px;display:flex;align-items:center;gap:10px}
+header h1{font-size:19px;margin:0;flex:1;font-weight:600}
+header button{background:none;color:#fff;font-size:15px;padding:4px 8px}
+#auth{align-items:center;justify-content:center;gap:10px;padding:24px;background:var(--g);color:#fff}
+#auth input{width:100%;max-width:300px;padding:12px 14px;border-radius:12px;border:0}
+#auth .go{background:#fff;color:var(--g);font-weight:600;padding:12px 28px;border-radius:12px}
+#auth .sw{background:none;color:#cfe3dc;text-decoration:underline}
+#aerr,#err{color:#ffb3b3;min-height:20px;font-size:14px}
+#q{margin:8px 12px;padding:10px 14px;border-radius:20px;border:1px solid #cdd6d2}
+#list{flex:1;overflow-y:auto}
+.row{display:flex;gap:12px;align-items:center;padding:11px 14px;border-bottom:1px solid #d9e0dc;background:#fff;width:100%;text-align:left}
+.av{width:44px;height:44px;border-radius:50%;background:var(--g2);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;flex:none}
+.rt{flex:1;min-width:0}
+.rt b{display:block}
+.rt span{display:block;color:var(--mute);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.meta{text-align:right;font-size:12px;color:var(--mute)}
+.badge{display:inline-block;background:var(--g2);color:#fff;border-radius:10px;padding:0 7px;margin-top:3px}
+#msgs{flex:1;overflow-y:auto;padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.m{max-width:80%;padding:7px 10px;border-radius:10px;background:#fff;align-self:flex-start;word-break:break-word;white-space:pre-wrap}
+.m.me{background:var(--mine);align-self:flex-end}
+.m small{display:block;text-align:right;font-size:11px;color:var(--mute);margin-top:2px}
+#bar{display:flex;gap:8px;padding:8px 10px;background:#f6f8f6}
+#txt{flex:1;min-width:0;padding:11px 15px;border-radius:22px;border:1px solid #cdd6d2}
+#send{background:var(--g2);color:#fff;border-radius:50%;width:46px;height:46px;font-size:18px}
+:focus-visible{outline:2px solid var(--g2);outline-offset:2px}
+.empty{color:var(--mute);text-align:center;padding:30px 16px}
+.m.card{border-left:4px solid var(--g2)}
+.m.dare{border-left-color:#d9534f}.m.joke{border-left-color:#e0a800}
+.m.card b{display:block;margin-bottom:3px}
+.join{display:block;margin-top:6px;background:var(--g2);color:#fff;border-radius:14px;padding:6px 14px}
+#plus{background:none;font-size:24px;padding:0 4px}
+#tray{display:none;gap:8px;padding:8px 10px;background:#f6f8f6;flex-wrap:wrap;border-top:1px solid #d9e0dc}
+#tray button{background:#fff;border:1px solid #cdd6d2;border-radius:16px;padding:8px 14px}
+#tray small{flex-basis:100%;color:var(--mute)}
+#voice{background:var(--g);color:#fff}
+#rinfo{padding:10px 16px;color:#cfe3dc}
+#people{flex:1;padding:8px 16px;font-size:18px}
+#people div{padding:8px 0;border-bottom:1px solid #ffffff22}
+#rbar{display:flex;gap:10px;padding:14px;justify-content:center}
+#rbar button{padding:12px 24px;border-radius:24px;font-weight:600;background:#fff;color:var(--g)}
+#leave{background:#d9534f!important;color:#fff!important}
+#intro{background:radial-gradient(120% 80% at 50% 20%,#6b4331,var(--g));color:#fff;align-items:center;justify-content:center;text-align:center;padding:28px;gap:14px}
+#intro .l1{font-size:23px;line-height:1.35;opacity:0;animation:fin 1.2s .3s forwards}
+#intro .l2{font-size:44px;font-weight:700;opacity:0;animation:fin 1.2s 1.6s forwards}
+#intro .l3{color:#f2d6c0;opacity:0;animation:fin 1.2s 2.8s forwards}
+#intro button{margin-top:10px;background:var(--g2);color:#fff;border-radius:24px;padding:13px 34px;font-weight:600;opacity:0;animation:fin 1s 3.8s forwards}
+@keyframes fin{to{opacity:1}}
+@media (prefers-reduced-motion:reduce){#intro *{animation-duration:.01s!important;animation-delay:0s!important}}
+</style>
+</head>
+<body>
+
+<div id="intro" class="screen on">
+  <div class="l1">Wo mujhe chhod kar kyun gayi?</div>
+  <div class="l2">🐱 Bagar Billi</div>
+  <div class="l3">Bagar Billi ki yaad mein.<br>Mere dost ke liye, thodi hasi aur bahut sari baatein.</div>
+  <button id="enter">Andar chalo</button>
+</div>
+
+<div id="auth" class="screen">
+  <h1>🐱 Bagar Billi</h1><div id="tag"></div>
+  <input id="u" placeholder="Username (a-z, 0-9, _)" autocomplete="username" autocapitalize="none">
+  <input id="p" type="password" placeholder="Password (6+ akshar)" autocomplete="current-password">
+  <div id="aerr"></div>
+  <button class="go" id="agoBtn">Andar aao</button>
+  <button class="sw" id="swBtn">Naya account banao</button>
+</div>
+
+<div id="home" class="screen">
+  <header><h1>🐱 Bagar Billi</h1><button id="newroom">🎙 Room</button><button id="out">Logout</button></header>
+  <input id="q" placeholder="Billi ya dost ka username dhundo">
+  <div id="list"></div>
+</div>
+
+<div id="chat" class="screen">
+  <header><button id="back" aria-label="Wapas">&#8592;</button><h1 id="who"></h1></header>
+  <div id="msgs" aria-live="polite"></div>
+  <div id="tray"><button id="tt">🤫 Truth</button><button id="td">😈 Dare</button><button id="th">💔 Dard</button><button id="tj">😂 Joke</button><button id="tv">🎙 Voice room</button><small>Dare sirf mazaak ke liye. Khatarnaak ya sharminda karne wala kuch nahi.</small></div>
+  <div id="bar"><button id="plus" aria-label="Masti">✨</button><input id="txt" placeholder="Kuch mast likh bhai..." autocomplete="off"><button id="send" aria-label="Bhejo">&#10148;</button></div>
+</div>
+
+<div id="voice" class="screen">
+  <header><h1 id="rname"></h1></header>
+  <div id="rinfo">Ye code doston ko bhejo (ya chat mein Voice room dabao). Headphone laga lo, warna echo aayega.</div>
+  <div id="people"></div><div id="audios"></div>
+  <div id="rbar"><button id="mute">Mute</button><button id="leave">Chhodo</button></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+var URL_='https://gwzkdqommzzhrsqzncvv.supabase.co';
+var KEY_='sb_publishable_dp79mNNd-KxmWdFBL_0TGA_I8ADAE-8';
+var sb=supabase.createClient(URL_,KEY_);
+var $=function(i){return document.getElementById(i)};
+var introDone=false, myname='dost', me=null, peer=null, peers=[], last={}, unread={}, signup=false;
+
+function show(id){['intro','auth','home','chat','voice'].forEach(function(s){$(s).classList.toggle('on',s===id);});}
+function tm(t){return new Date(t).toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});}
+
+$('enter').onclick=function(){introDone=true;show(me?'home':'auth');if(me)renderList();};
+$('swBtn').onclick=function(){signup=!signup;$('agoBtn').textContent=signup?'Account banao':'Andar aao';$('swBtn').textContent=signup?'Account hai? Login karo':'Naya account banao';$('aerr').textContent='';};
+
+$('agoBtn').onclick=async function(){
+  var u=$('u').value.trim().toLowerCase(), p=$('p').value, e=$('aerr');
+  if(!/^[a-z0-9_]{3,20}$/.test(u)){e.textContent='Username 3-20 akshar: a-z, 0-9, _';return;}
+  if(p.length<6){e.textContent='Password kam se kam 6 akshar ka rakho';return;}
+  var email=u+'@chat.example.com', r;
+  if(signup){
+    r=await sb.auth.signUp({email:email,password:p});
+    if(r.error){e.textContent=r.error.message;return;}
+    if(!r.data.session){e.textContent='Supabase mein "Confirm email" band karo, phir login karo.';return;}
+    var pr=await sb.from('profiles').insert({id:r.data.user.id,username:u});
+    if(pr.error){e.textContent=pr.error.code==='23505'?'Ye username le liya gaya hai':pr.error.message;return;}
+  }else{
+    r=await sb.auth.signInWithPassword({email:email,password:p});
+    if(r.error){e.textContent='Username ya password galat hai';return;}
+  }
+  $('p').value=''; start(r.data.user);
+};
+
+$('out').onclick=async function(){await sb.auth.signOut();location.reload();};
+
+async function start(user){
+  me=user.id; if(introDone)show('home'); sb.from('profiles').select('username').eq('id',me).single().then(function(r){if(r.data)myname=r.data.username;});
+  await loadList();
+  sb.channel('inbox').on('postgres_changes',
+    {event:'INSERT',schema:'public',table:'messages',filter:'receiver=eq.'+me},
+    function(pl){
+      var m=pl.new;
+      if(peer&&peer.id===m.sender){addMsg(m);}
+      else{unread[m.sender]=(unread[m.sender]||0)+1;}
+      last[m.sender]=m; renderList();
+    }).subscribe();
+}
+
+async function loadList(){
+  var a=await sb.from('profiles').select('id,username').neq('id',me).order('username');
+  peers=a.data||[];
+  var b=await sb.from('messages').select('*').order('created_at',{ascending:false}).limit(300);
+  (b.data||[]).forEach(function(m){var o=m.sender===me?m.receiver:m.sender; if(!last[o]) last[o]=m;});
+  renderList();
+}
+
+function renderList(){
+  var f=$('q').value.trim().toLowerCase(), box=$('list'); box.textContent='';
+  var rows=peers.filter(function(p){return !f||p.username.indexOf(f)>-1;});
+  rows.sort(function(x,y){var a=last[x.id],b=last[y.id];return (b?+new Date(b.created_at):0)-(a?+new Date(a.created_at):0);});
+  if(!rows.length){var d=document.createElement('div');d.className='empty';d.textContent='Yahan sannata hai. Billi bhi so gayi. Kisi ko bula!';box.appendChild(d);return;}
+  rows.forEach(function(p){
+    var b=document.createElement('button');b.className='row';
+    var av=document.createElement('div');av.className='av';av.textContent=p.username[0].toUpperCase();
+    var rt=document.createElement('div');rt.className='rt';
+    var n=document.createElement('b');n.textContent=p.username;
+    var s=document.createElement('span');var l=last[p.id];s.textContent=l?((l.sender===me?'Tum: ':'')+l.body):'Baat shuru karo';
+    rt.appendChild(n);rt.appendChild(s);
+    var mt=document.createElement('div');mt.className='meta';
+    if(l)mt.textContent=tm(l.created_at);
+    if(unread[p.id]){var bd=document.createElement('div');bd.className='badge';bd.textContent=unread[p.id];mt.appendChild(bd);}
+    b.appendChild(av);b.appendChild(rt);b.appendChild(mt);
+    b.onclick=function(){openChat(p);};
+    box.appendChild(b);
+  });
+}
+$('q').oninput=renderList;
+
+async function openChat(p){
+  peer=p; unread[p.id]=0; $('who').textContent=p.username; $('msgs').textContent=''; show('chat');
+  var r=await sb.from('messages').select('*')
+    .or('and(sender.eq.'+me+',receiver.eq.'+p.id+'),and(sender.eq.'+p.id+',receiver.eq.'+me+')')
+    .order('created_at').limit(200);
+  (r.data||[]).forEach(addMsg);
+}
+$('back').onclick=function(){peer=null;show('home');renderList();};
+
+var LABEL={truth:'🤫 Truth',dare:'😈 Dare',joke:'😂 Joke',room:'🎙 Voice room'};
+var TRUTHS=['Aakhri baar kab jhooth bola, aur kyun?','Phone mein sabse ajeeb gaana kaunsa hai?','Kis dost ka message seen karke ignore kiya hai?','Bachpan ka sabse bada jhooth kya tha?','Aaj tak ka sabse bura haircut kaisa tha?','Kaunsi aadat tujhe khud pasand nahi?','Sabse ajeeb sapna kaunsa aaya tha?','Group mein sabse zyada kaun tujhe hasata hai, aur kyun?'];
+var DARES=['Agle 3 message sirf shayari mein likh.','Voice room mein murge ki awaaz nikaal.','Apne naam pe 2 line ki tukbandi bana ke sunao.','Ek minute tak har baat pe sirf "jee huzoor" bol.','Ghar ki kisi cheez ko hero ki tarah introduce kar.','Agle 5 message bina "a" akshar ke likh.','Dost ki tareef mein 3 line ka filmy dialogue bol.','10 second tak news reader ban ke apna din bata.'];
+var DARD=['Wo mujhe chhod kar kyun gayi? Shayad Wifi ka password badal gaya.','Wo gayi to gayi, charger to mera hi kaam aaya.','Wo mujhe chhod kar kyun gayi? Main to reel mein bhi seen chhod deta tha.','Dil toota, par screen guard bacha raha.','Usne kaha "tum bahut acche ho" aur phir chali gayi. Acche logon ke saath yehi hota hai.','Wo mujhe chhod kar kyun gayi? Shayad main hi uska battery low tha.','Billi ne rasta kaata aur uski zindagi se mera naam kat gaya.'];
+var TAGS=['Wo mujhe chhod kar kyun gayi? Chhodo, chat karo.','Yahan sirf billiyan aur bakwaas allowed hai.','Gambhir hona mana hai. Miyaaon aana mana nahi.','Dil toota? Message bhej, ilaaj mil jayega.'];
+var JOKES=['Billi ne rasta kaata, exam ka hall ticket bhi gum ho gaya.','Teacher: 2+2? Student: Sir, calculator ke bina nahi aata.','Wifi ne bola: tu door ja, tu mera nahi. Router roya.','Alarm ne subah 6 baje kaha: uth ja. Maine bola: tu chhota hai, tu mat bol.','Mummy: padhai kar. Main: kar raha hoon. Phone: 4 ghante se reels.','Exam hall mein sabse zyada yaad aata hai wo jo kal raat soch ke nahi padha.'];
+$('tag').textContent=pick_(TAGS);
+function pick_(a){return a[Math.floor(Math.random()*a.length)];}
+function pick(a){return a[Math.floor(Math.random()*a.length)];}
+
+function addMsg(m){
+  var k=m.kind||'text', d=document.createElement('div');
+  d.className='m'+(m.sender===me?' me':'')+(k!=='text'?' card '+k:'');
+  if(k!=='text'){var h=document.createElement('b');h.textContent=LABEL[k]||'';d.appendChild(h);}
+  d.appendChild(document.createTextNode(k==='room'?'Code: '+m.body:m.body));
+  if(k==='room'&&/^[a-z0-9_-]{3,45}$/.test(m.body)){
+    var j=document.createElement('button');j.className='join';j.textContent='Room mein aao';
+    j.onclick=function(){joinRoom(m.body);};d.appendChild(j);
+  }
+  var s=document.createElement('small');s.textContent=tm(m.created_at);d.appendChild(s);
+  $('msgs').appendChild(d);$('msgs').scrollTop=1e9;
+}
+
+async function sendMsg(t,kind){
+  if(!t||!peer)return;
+  var r=await sb.from('messages').insert({receiver:peer.id,body:t.slice(0,2000),kind:kind||'text'}).select().single();
+  if(r.error){alert('Message nahi gaya: '+r.error.message);return;}
+  last[peer.id]=r.data; addMsg(r.data);
+}
+function send(){var t=$('txt').value.trim(); if(!t)return; $('txt').value=''; sendMsg(t,'text');}
+$('plus').onclick=function(){var t=$('tray');t.style.display=t.style.display==='flex'?'none':'flex';};
+$('tt').onclick=function(){sendMsg(pick(TRUTHS),'truth');$('tray').style.display='none';};
+$('td').onclick=function(){sendMsg(pick(DARES),'dare');$('tray').style.display='none';};
+$('th').onclick=function(){sendMsg(pick(DARD),'joke');$('tray').style.display='none';};
+$('tj').onclick=function(){sendMsg(pick(JOKES),'joke');$('tray').style.display='none';};
+$('tv').onclick=function(){var c=dmCode(peer.username);sendMsg(c,'room');$('tray').style.display='none';joinRoom(c);};
+
+/* ---- Voice room: WebRTC + Supabase broadcast signaling ---- */
+var room=null, pcs={}, local=null, rch=null, ICE=[{urls:'stun:stun.l.google.com:19302'}];
+function rcode(){return Math.random().toString(36).slice(2,8);}
+function dmCode(u){return [myname,String(u).toLowerCase()].sort().join('-');}
+$('newroom').onclick=async function(){
+  var u=(prompt('Dost ka username daalo, jisse voice room mein baat karni hai')||'').trim().toLowerCase();
+  if(!u)return;
+  var p=peers.find(function(x){return x.username===u;});
+  if(!p){alert('Ye username nahi mila. Dost ne account banaya?');return;}
+  var c=dmCode(u);
+  await sb.from('messages').insert({receiver:p.id,body:c,kind:'room'});
+  joinRoom(c);
+};
+async function joinRoom(code){
+  if(!/^[a-z0-9_-]{3,45}$/.test(code)||room)return;
+  try{local=await navigator.mediaDevices.getUserMedia({audio:true});}
+  catch(e){alert('Mic ki permission do, tabhi awaaz chalegi');return;}
+  room=code; show('voice'); $('rname').textContent='Room: '+code; $('mute').textContent='Mute';
+  rch=sb.channel('room-'+code,{config:{presence:{key:me},broadcast:{self:false}}});
+  rch.on('broadcast',{event:'sig'},function(x){onSig(x.payload);});
+  rch.on('presence',{event:'sync'},drawPeople);
+  rch.subscribe(async function(st){
+    if(st==='SUBSCRIBED'){await rch.track({name:myname});sig({t:'hello'});}
+  });
+}
+function sig(p){p.from=me;rch.send({type:'broadcast',event:'sig',payload:p});}
+function drawPeople(){
+  var box=$('people');box.textContent='';var st=rch.presenceState();
+  Object.keys(st).forEach(function(k){var d=document.createElement('div');
+    d.textContent=(k===me?'Tum':st[k][0].name)+' 🎤';box.appendChild(d);});
+}
+function mkPC(id,init){
+  var pc=new RTCPeerConnection({iceServers:ICE});pcs[id]=pc;
+  local.getTracks().forEach(function(t){pc.addTrack(t,local);});
+  pc.onicecandidate=function(e){if(e.candidate)sig({t:'ice',to:id,c:e.candidate});};
+  pc.ontrack=function(e){var a=document.createElement('audio');a.autoplay=true;a.srcObject=e.streams[0];$('audios').appendChild(a);};
+  if(init)pc.createOffer().then(function(o){return pc.setLocalDescription(o).then(function(){sig({t:'offer',to:id,d:o});});});
+  return pc;
+}
+async function onSig(p){
+  if(!room||p.from===me||(p.to&&p.to!==me))return;
+  if(p.t==='hello'){if(pcs[p.from])pcs[p.from].close();mkPC(p.from,true);}
+  else if(p.t==='offer'){var pc=mkPC(p.from,false);await pc.setRemoteDescription(p.d);
+    var a=await pc.createAnswer();await pc.setLocalDescription(a);sig({t:'answer',to:p.from,d:a});}
+  else if(p.t==='answer'&&pcs[p.from]){await pcs[p.from].setRemoteDescription(p.d);}
+  else if(p.t==='ice'&&pcs[p.from]){try{await pcs[p.from].addIceCandidate(p.c);}catch(e){}}
+}
+$('mute').onclick=function(){var t=local.getAudioTracks()[0];t.enabled=!t.enabled;$('mute').textContent=t.enabled?'Mute':'Unmute';};
+$('leave').onclick=function(){
+  Object.keys(pcs).forEach(function(k){pcs[k].close();});pcs={};
+  if(local)local.getTracks().forEach(function(t){t.stop();});local=null;
+  if(rch)sb.removeChannel(rch);rch=null;room=null;$('audios').textContent='';
+  show(peer?'chat':'home');
+};
+$('send').onclick=send;
+$('txt').onkeydown=function(e){if(e.key==='Enter')send();};
+
+sb.auth.getSession().then(function(r){if(r.data.session)start(r.data.session.user);});
+</script>
+</body>
+</html>
